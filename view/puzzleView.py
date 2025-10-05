@@ -62,12 +62,16 @@ class View:
         control_frame = tk.Frame(self.root, bg=WOOD_BACKGROUND)
         control_frame.pack(pady=8)
 
-        tk.Button(control_frame, text="Shuffle", command=self.controller.auto_shuffle,
-                  font=("Helvetica", 11), width=10).grid(row=0, column=0, padx=6)
-        tk.Button(control_frame, text="Solve", command=self.controller.solve,
-                  font=("Helvetica", 11), width=10).grid(row=0, column=1, padx=6)
-        tk.Button(control_frame, text="Exit", command=self.root.quit,
-                  font=("Helvetica", 11), width=10).grid(row=0, column=2, padx=6)
+        buttons = [
+            ("Shuffle", self.controller.auto_shuffle),
+            ("Solve", self.controller.solve),
+            ("Reset", self.controller.reset),
+            ("Exit", self.root.quit),
+        ]
+
+        for columns, (text, cmd) in enumerate(buttons):
+            tk.Button(control_frame, text=text, command=cmd, font=("Helvetica", 11),
+                      width=10).grid(row=0, column=columns, padx=6)
 
     def display(self, puzzle):
         for i in range(puzzle.size):

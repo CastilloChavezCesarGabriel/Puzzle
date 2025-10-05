@@ -27,6 +27,11 @@ class Controller:
         self.view.display(self.puzzle)
         self.view.show_status("Shuffled!")
 
+    def reset(self):
+        self.puzzle = Puzzle()
+        self.view.display(self.puzzle)
+        self.view.show_status("Reset!")
+
     def solve(self):
         solution = self.solver.solve(self.puzzle)
         if not solution:
