@@ -1,0 +1,92 @@
+import tkinter as tk
+from tkinter import font
+import time
+
+WOOD_BACKGROUND = "#c38a06"
+BOARD_BACKGROUND = "#4b3a27"
+TILE_BACKGROUND = "#d8b292"
+TILE_ACTIVE = "#e6c5a8"
+TILE_TEXT = "#6b3f12"
+EMPTY_BACKGROUND = "#2f241a"
+
+class View:
+    def __init__(self, controller):
+        self.controller = controller
+        self.root = tk.Tk()
+        self.root.title("Puzzle")
+        self.root.configure(background=WOOD_BACKGROUND)
+        self.status = tk.StringVar(value="")
+        tk.Label(self.root, textvariable=self.status, bg=WOOD_BACKGROUND, fg="white",
+                 font=("Helvetica", 10)).pack(pady=(6, 10))
+        self.frame = self.create_frame()
+        self.tiles = self.create_board()
+        self.create_controls()
+
+    def create_frame(self):
+        outer = tk.Frame(self.root, bg=WOOD_BACKGROUND, bd=18, relief="ridge")
+        outer.pack(padx=14, pady=6)
+        frame = tk.Frame(outer, bg=BOARD_BACKGROUND, bd=10, relief="sunken")
+        frame.pack()
+        return frame
+
+    def create_board(self):
+        tile_font = font.Font(family="Helvetica", size=22, weight="bold")
+        tiles = []
+        for i in range(4):
+            row = []
+            for j in range(4):
+                tile = tk.Button(
+                    self.frame,
+                    text="",
+                    width=4,
+                    height=2,
+                    font=tile_font,
+                    bg=TILE_BACKGROUND, fg=TILE_TEXT,
+                    activebackground=TILE_ACTIVE,
+                    activeforeground=TILE_TEXT,
+                    relief="raised",
+                    bd=6,
+                    command=lambda r=i, c=j: self.controller.handle_click(r, c)
+                )
+                tile.grid(row=i, column=j, padx=6, pady=6, sticky="nsew")
+                row.append(tile)
+            tiles.append(row)
+
+        for i in range(4):
+            self.frame.grid_rowconfigure(i, weight=1)
+            self.frame.grid_columnconfigure(i, weight=1)
+
+        return tiles
+
+    def create_controls(self):
+        control_frame = tk.Frame(self.root, bg=WOOD_BACKGROUND)
+        control_frame.pack(pady=8)
+
+        tk.Button(control_frame, text="Shuffle", command=self.controller.auto_shuffle,
+                  font=("Helvetica", 11), width=10).grid(row=0, column=0, padx=6)
+        tk.Button(control_frame, text="Solve", command=self.controller.solve,
+                  font=("Helvetica", 11), width=10).grid(row=0, column=1, padx=6)
+        tk.Button(control_frame, text="Exit", command=self.root.quit,
+                  font=("Helvetica", 11), width=10).grid(row=0, column=2, padx=6)
+
+    def display(self, puzzle):
+        for i in range(puzzle.size):
+            for j in range(puzzle.size):
+                value = puzzle.state[i * puzzle.size + j]
+                tile = self.tiles[i][j]
+                if value == 0:
+                    tile.config(text="", bg=EMPTY_BACKGROUND, activebackground=EMPTY_BACKGROUND, relief="sunken")
+                else:
+                    tile.config(text=str(value), bg=TILE_BACKGROUND, activebackground=TILE_ACTIVE)
+
+    def show_solution(self, steps):
+        for step in steps:
+            self.display(step)
+            self.root.update()
+            time.sleep(0.3)
+
+    def show_status(self, text: str):
+        self.status.set(text)
+
+    def run(self):
+        self.root.mainloop()
