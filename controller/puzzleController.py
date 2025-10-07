@@ -33,11 +33,17 @@ class Controller:
         self.view.show_status("Reset!")
 
     def solve(self):
+        if self.puzzle.is_solved():
+            self.view.show_status("Already solved!")
+            return
+
+        self.view.show_status("Finding solution...")
         solution = self.model.solve(self.puzzle)
+
         if not solution:
             self.view.show_status("No solution!")
             return
-        self.view.show_status("Finding solution...")
+
         self.view.show_solution(solution)
         self.puzzle = solution[-1]
         self.view.display(self.puzzle)
