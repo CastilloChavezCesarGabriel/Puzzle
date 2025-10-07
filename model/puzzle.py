@@ -30,10 +30,14 @@ class Puzzle:
         return Puzzle(tuple(tiles_copy))
 
     def shuffle(self, steps=100):
-        shuffled_puzzle = self
+        shuffled = self
+        previous = None
         for i in range(steps):
-            shuffled_puzzle = random.choice(list(shuffled_puzzle.move()))
-        return shuffled_puzzle
+            moves = list(shuffled.move())
+            if previous:
+                moves = [move for move in moves if move.state != previous.state] or moves
+            previous, shuffled = shuffled, random.choice(moves)
+        return shuffled
 
     def solve_by_manhattan(self):
         distance = 0
@@ -46,4 +50,4 @@ class Puzzle:
         return distance
 
     def __lt__(self, other):
-        return self.state < other.state
+        return self.solve_by_manhattan() < other.solve_by_manhattan()

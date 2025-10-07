@@ -1,10 +1,10 @@
 from model.puzzle import Puzzle
-from model.solver import Solver
+from model.puzzleModel import Model
 from view.puzzleView import View
 
 class Controller:
     def __init__(self):
-        self.solver = Solver()
+        self.solver = Model()
         self.puzzle = Puzzle()
         self.view = View(self)
         self.view.display(self.puzzle)
@@ -23,7 +23,7 @@ class Controller:
                 self.view.show_status("All done!")
 
     def auto_shuffle(self):
-        self.puzzle = self.puzzle.shuffle(50)
+        self.puzzle = self.puzzle.shuffle(30)
         self.view.display(self.puzzle)
         self.view.show_status("Shuffled!")
 
