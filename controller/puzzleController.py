@@ -4,7 +4,7 @@ from view.puzzleView import View
 
 class Controller:
     def __init__(self):
-        self.solver = Model()
+        self.model = Model()
         self.puzzle = Puzzle()
         self.view = View(self)
         self.view.display(self.puzzle)
@@ -33,7 +33,7 @@ class Controller:
         self.view.show_status("Reset!")
 
     def solve(self):
-        solution = self.solver.solve(self.puzzle)
+        solution = self.model.solve(self.puzzle)
         if not solution:
             self.view.show_status("No solution!")
             return
