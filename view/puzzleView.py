@@ -16,8 +16,9 @@ class View:
         self.root.title("Puzzle")
         self.root.configure(background=WOOD_BACKGROUND)
         self.status = tk.StringVar(value="")
+        status_font = font.Font(family="Arial", size=20, weight="bold", slant="italic")
         tk.Label(self.root, textvariable=self.status, bg=WOOD_BACKGROUND, fg="white",
-                 font=("Helvetica", 10)).pack(pady=(6, 10))
+                 font=status_font).pack(pady=(6, 10))
         self.frame = self.create_frame()
         self.tiles = self.create_board()
         self.create_controls()
@@ -30,7 +31,7 @@ class View:
         return frame
 
     def create_board(self):
-        tile_font = font.Font(family="Helvetica", size=22, weight="bold")
+        tile_font = font.Font(family="Helvetica", size=25, weight="bold")
         tiles = []
         for i in range(4):
             row = []
