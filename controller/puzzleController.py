@@ -23,7 +23,7 @@ class Controller:
                 self.view.show_status("All done!")
 
     def auto_shuffle(self):
-        self.puzzle = self.puzzle.shuffle(30)
+        self.puzzle = self.puzzle.shuffle(40)
         self.view.display(self.puzzle)
         self.view.show_status("Shuffled!")
 
