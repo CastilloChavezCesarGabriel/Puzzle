@@ -18,11 +18,9 @@ class Controller:
         self.view.run()
 
     def handle_click(self, row, column):
-        empty_index = self.puzzle.state.index(0)
-        zx, zy = divmod(empty_index, self.puzzle.size)
-        if (abs(zx - row) == 1 and zy == column) or (abs(zy - column) == 1 and zx == row):
-            target = row * self.puzzle.size + column
-            self.puzzle = self.puzzle.swap(empty_index, target)
+        new_puzzle = self.puzzle.move_tile(row, column)
+        if new_puzzle != self.puzzle:
+            self.puzzle = new_puzzle
             self.view.display(self.puzzle)
 
     def auto_shuffle(self):

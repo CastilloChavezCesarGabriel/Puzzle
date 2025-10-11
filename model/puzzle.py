@@ -24,12 +24,22 @@ class Puzzle:
         for offset in directions:
             yield self.swap(empty_index, empty_index + offset)
 
+    def move_tile(self, row, column):
+        empty_index = self.state.index(0)
+        zx, zy = divmod(empty_index, self.size)
+
+        if (abs(zx - row) == 1 and zy == column) or (abs(zy - column) == 1 and zx == row):
+            target_index = row * self.size + column
+            return self.swap(empty_index, target_index)
+
+        return self
+
     def swap(self, i, j):
         tiles_copy = list(self.state)
         tiles_copy[i], tiles_copy[j] = tiles_copy[j], tiles_copy[i]
         return Puzzle(tuple(tiles_copy))
 
-    def shuffle(self, steps=100):
+    def shuffle(self, steps):
         shuffled = self
         previous = None
         for i in range(steps):
