@@ -12,6 +12,7 @@ EMPTY_BACKGROUND = "#2f241a"
 class View:
     def __init__(self):
         self.size = 4
+        self.duration = 3000
         self.root = tk.Tk()
         self.root.title("Puzzle")
         self.root.configure(background=WOOD_BACKGROUND)
@@ -100,6 +101,10 @@ class View:
 
     def show_status(self, text: str):
         self.status.set(text)
+        self.root.after(self.duration, lambda: self.clear_status())
+
+    def clear_status(self):
+        self.status.set("")
 
     def run(self):
         self.root.mainloop()
