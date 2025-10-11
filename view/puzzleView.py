@@ -19,7 +19,6 @@ class View:
         self.on_shuffle = None
         self.on_solve = None
         self.on_reset = None
-        self.on_exit = None
 
         self.status = tk.StringVar(value="")
         status_font = font.Font(family="Arial", size=20, weight="bold", slant="italic")
