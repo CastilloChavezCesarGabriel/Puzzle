@@ -10,15 +10,22 @@ TILE_TEXT = "#6b3f12"
 EMPTY_BACKGROUND = "#2f241a"
 
 class View:
-    def __init__(self, controller):
-        self.controller = controller
+    def __init__(self):
         self.root = tk.Tk()
         self.root.title("Puzzle")
         self.root.configure(background=WOOD_BACKGROUND)
+
+        self.on_click_tile = None
+        self.on_shuffle = None
+        self.on_solve = None
+        self.on_reset = None
+        self.on_exit = None
+
         self.status = tk.StringVar(value="")
         status_font = font.Font(family="Arial", size=20, weight="bold", slant="italic")
         tk.Label(self.root, textvariable=self.status, bg=WOOD_BACKGROUND, fg="white",
                  font=status_font).pack(pady=(6, 10))
+
         self.frame = self.create_frame()
         self.tiles = self.create_board()
         self.create_controls()
@@ -47,7 +54,7 @@ class View:
                     activeforeground=TILE_TEXT,
                     relief="raised",
                     bd=6,
-                    command=lambda r=i, c=j: self.controller.handle_click(r, c)
+                    command=lambda r=i, c=j: self.on_click_tile and self.on_click_tile(r, c)
                 )
                 tile.grid(row=i, column=j, padx=6, pady=6, sticky="nsew")
                 row.append(tile)
@@ -64,9 +71,9 @@ class View:
         control_frame.pack(pady=8)
 
         buttons = [
-            ("Shuffle", self.controller.auto_shuffle),
-            ("Solve", self.controller.solve),
-            ("Reset", self.controller.reset),
+            ("Shuffle", lambda: self.on_shuffle and self.on_shuffle()),
+            ("Solve", lambda: self.on_solve and self.on_solve()),
+            ("Reset", lambda: self.on_reset and self.on_reset()),
             ("Exit", self.root.quit),
         ]
 

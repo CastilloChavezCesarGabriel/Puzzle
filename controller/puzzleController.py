@@ -1,14 +1,18 @@
 from model.puzzle import Puzzle
-from model.puzzleModel import Model
-from view.puzzleView import View
 
 class Controller:
-    def __init__(self):
-        self.model = Model()
+    def __init__(self, model, view):
+        self.model = model
         self.puzzle = Puzzle()
-        self.view = View(self)
-        self.view.display(self.puzzle)
+        self.view = view
         self.solving = False
+
+        self.view.on_click_tile = self.handle_click
+        self.view.on_shuffle = self.auto_shuffle
+        self.view.on_solve = self.solve
+        self.view.on_reset = self.reset
+
+        self.view.display(self.puzzle)
 
     def run(self):
         self.view.run()
