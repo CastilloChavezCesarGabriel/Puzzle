@@ -11,6 +11,7 @@ EMPTY_BACKGROUND = "#2f241a"
 
 class View:
     def __init__(self):
+        self.size = 4
         self.root = tk.Tk()
         self.root.title("Puzzle")
         self.root.configure(background=WOOD_BACKGROUND)
@@ -39,9 +40,9 @@ class View:
     def create_board(self):
         tile_font = font.Font(family="Helvetica", size=25, weight="bold")
         tiles = []
-        for i in range(4):
+        for i in range(self.size):
             row = []
-            for j in range(4):
+            for j in range(self.size):
                 tile = tk.Button(
                     self.frame,
                     text="",
@@ -60,7 +61,7 @@ class View:
                 row.append(tile)
             tiles.append(row)
 
-        for i in range(4):
+        for i in range(self.size):
             self.frame.grid_rowconfigure(i, weight=1)
             self.frame.grid_columnconfigure(i, weight=1)
 
