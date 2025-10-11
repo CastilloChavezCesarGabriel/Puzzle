@@ -22,6 +22,8 @@ class Controller:
         if new_puzzle != self.puzzle:
             self.puzzle = new_puzzle
             self.view.display(self.puzzle)
+            if self.puzzle.is_solved():
+                self.view.show_status("Solved!")
 
     def auto_shuffle(self):
         if self.solving:
@@ -64,6 +66,6 @@ class Controller:
             self.view.show_solution(solution)
             self.puzzle = solution[-1]
             self.view.display(self.puzzle)
-            self.view.show_status("Found!")
+            self.view.show_status("Solved!")
 
         self.solving = False
