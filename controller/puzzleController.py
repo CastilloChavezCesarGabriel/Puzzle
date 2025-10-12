@@ -57,7 +57,7 @@ class Controller:
             return
 
         self.solving = True
-        self.view.show_status("Finding solution...")
+        self.view.show_status("Solving puzzle...")
         solution = self.model.solve(self.puzzle)
 
         if not solution:
