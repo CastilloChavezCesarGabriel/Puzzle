@@ -44,20 +44,9 @@ class View:
         for i in range(self.size):
             row = []
             for j in range(self.size):
-                tile = tk.Button(
-                    self.frame,
-                    text="",
-                    width=4,
-                    height=2,
-                    font=tile_font,
-                    bg=TILE_BACKGROUND,
-                    fg=TILE_TEXT,
-                    activebackground=TILE_ACTIVE,
-                    activeforeground=TILE_TEXT,
-                    relief="raised",
-                    bd=6,
-                    command=lambda r=i, c=j: self.on_click_tile and self.on_click_tile(r, c)
-                )
+                tile = tk.Button(self.frame, text="", width=4, height=2, font=tile_font, bg=TILE_BACKGROUND,
+                    fg=TILE_TEXT, activebackground=TILE_ACTIVE, activeforeground=TILE_TEXT, relief="raised",
+                    bd=6, command=lambda r=i, c=j: self.on_click_tile and self.on_click_tile(r, c))
                 tile.grid(row=i, column=j, padx=6, pady=6, sticky="nsew")
                 row.append(tile)
             tiles.append(row)
