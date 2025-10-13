@@ -12,7 +12,6 @@ EMPTY_BACKGROUND = "#2f241a"
 class View:
     def __init__(self):
         self.size = 4
-        self.duration = 5000
         self.root = tk.Tk()
         self.root.title("Puzzle")
         self.root.configure(background=WOOD_BACKGROUND)
@@ -23,6 +22,7 @@ class View:
         self.on_reset = None
 
         self.status = tk.StringVar(value="")
+        self.new_status = None
         status_font = font.Font(family="Arial", size=20, weight="bold", slant="italic")
         tk.Label(self.root, textvariable=self.status, bg=WOOD_BACKGROUND, fg="white",
                  font=status_font).pack(pady=(6, 10))
@@ -99,12 +99,18 @@ class View:
             self.root.update()
             time.sleep(0.3)
 
-    def show_status(self, text: str):
+    def show_status(self, text: str, duration: float | None = None):
+        if self.new_status is not None:
+            self.root.after_cancel(self.new_status)
+            self.new_status = None
+
         self.status.set(text)
-        self.root.after(self.duration, lambda: self.clear_status())
+        if duration is not None:
+            self.new_status = self.root.after(duration, lambda: self.clear_status())
 
     def clear_status(self):
         self.status.set("")
+        self.new_status = None
 
     def run(self):
         self.root.mainloop()
