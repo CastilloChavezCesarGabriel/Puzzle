@@ -88,7 +88,7 @@ class View:
             self.root.update()
             time.sleep(0.3)
 
-    def show_status(self, text: str, duration: float | None = None):
+    def show_status(self, text: str, duration: int | None = None):
         if self.new_status is not None:
             self.root.after_cancel(self.new_status)
             self.new_status = None
