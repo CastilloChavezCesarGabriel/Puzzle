@@ -6,7 +6,7 @@ class Controller:
         self.puzzle = Puzzle()
         self.view = view
         self.solving = False
-        self.duration = 3000
+        self.duration = 2000
 
         self.view.on_click_tile = self.handle_click
         self.view.on_shuffle = self.auto_shuffle
