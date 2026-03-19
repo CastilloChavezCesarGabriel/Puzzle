@@ -43,9 +43,10 @@ class Board:
                 tile.grid(row=row_index, column=column_index, padx=6, pady=6, sticky="nsew")
                 row.append(tile)
             tiles.append(row)
+        self.__configure()
+        return tiles
 
+    def __configure(self):
         for index in range(self.__size):
             self.__frame.grid_rowconfigure(index, weight=1)
             self.__frame.grid_columnconfigure(index, weight=1)
-
-        return tiles

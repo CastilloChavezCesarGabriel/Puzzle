@@ -1,6 +1,7 @@
 import random
 
 from model.manhattan_distance import ManhattanDistance
+from model.space import Space
 from model.tile import Tile
 
 class Puzzle:
@@ -13,19 +14,8 @@ class Puzzle:
         return self.__state == self.__goal
 
     def move(self):
-        empty_index = self.__state.index(0)
-        empty_row, empty_column = divmod(empty_index, self.__size)
-        directions = []
-        if empty_row > 0:
-            directions.append(-self.__size)
-        if empty_row < self.__size - 1:
-            directions.append(self.__size)
-        if empty_column > 0:
-            directions.append(-1)
-        if empty_column < self.__size - 1:
-            directions.append(1)
-        for offset in directions:
-            yield self.__swap(empty_index, empty_index + offset)
+        for source, target in Space().expand(self.__state, self.__size):
+            yield self.__swap(source, target)
 
     def move_tile(self, row, column):
         new_state = Tile(row, column).move(self.__state, self.__size)

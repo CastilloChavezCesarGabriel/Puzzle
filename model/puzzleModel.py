@@ -10,15 +10,15 @@ class Model:
         self.__frontier = [(puzzle.solve_by_manhattan(), 0, puzzle)]
         self.__reached = {puzzle: 0}
         self.__parents = {puzzle: None}
-        while self.__frontier:
-            _, path_cost, current_puzzle = heapq.heappop(self.__frontier)
+        return self.__search()
 
+    def __search(self):
+        while self.__frontier:
+            _, _, current_puzzle = heapq.heappop(self.__frontier)
             if current_puzzle.is_solved():
                 return self.__trace(current_puzzle)
-
             for next_puzzle in current_puzzle.move():
-                self.__process(next_puzzle, current_puzzle, path_cost)
-
+                self.__process(next_puzzle, current_puzzle)
         return []
 
     def __trace(self, current_puzzle):
@@ -29,8 +29,8 @@ class Model:
             node = self.__parents.get(node)
         return list(reversed(solution))
 
-    def __process(self, next_puzzle, current_puzzle, path_cost):
-        new_cost = path_cost + 1
+    def __process(self, next_puzzle, current_puzzle):
+        new_cost = self.__reached[current_puzzle] + 1
         if next_puzzle not in self.__reached or new_cost < self.__reached[next_puzzle]:
             self.__reached[next_puzzle] = new_cost
             self.__parents[next_puzzle] = current_puzzle

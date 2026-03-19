@@ -1,7 +1,6 @@
 from model.puzzle import Puzzle
 from view.puzzle_listener import IPuzzleListener
 
-
 class Controller(IPuzzleListener):
     def __init__(self, model, view):
         self.__model = model
@@ -46,25 +45,26 @@ class Controller(IPuzzleListener):
         self.__solving = False
 
     def on_solve(self):
-        if self.__guard("Already solving..."):
-            return
-
         if self.__puzzle.is_solved():
             self.__view.notify("Already solved!", self.__duration)
             return
 
+        if self.__guard("Already solving..."):
+            return
+
+        self.__resolve()
+        self.__solving = False
+
+    def __resolve(self):
         self.__view.notify("Solving puzzle...", None)
         solution = self.__model.solve(self.__puzzle)
-
         if not solution:
             self.__view.notify("No solution!", self.__duration)
-        else:
-            self.__view.animate(solution, self)
-            self.__puzzle = solution[-1]
-            self.__display()
-            self.__view.notify("Solved!", self.__duration)
-
-        self.__solving = False
+            return
+        self.__view.animate(solution, self)
+        self.__puzzle = solution[-1]
+        self.__display()
+        self.__view.notify("Solved!", self.__duration)
 
     def __display(self):
         self.__puzzle.accept(self)
