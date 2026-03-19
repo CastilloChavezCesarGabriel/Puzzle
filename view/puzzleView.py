@@ -1,105 +1,37 @@
 import tkinter as tk
-from tkinter import font
 import time
 
-WOOD_BACKGROUND = "#c38a06"
-BOARD_BACKGROUND = "#4b3a27"
-TILE_BACKGROUND = "#d8b292"
-TILE_ACTIVE = "#e6c5a8"
-TILE_TEXT = "#6b3f12"
-EMPTY_BACKGROUND = "#2f241a"
+from view.board import Board
+from view.control_panel import ControlPanel
+from view.status_bar import StatusBar
 
 class View:
+    __WOOD_BACKGROUND = "#c38a06"
+
     def __init__(self):
-        self.size = 4
-        self.root = tk.Tk()
-        self.root.title("Puzzle")
-        self.root.configure(background=WOOD_BACKGROUND)
+        self.__root = tk.Tk()
+        self.__root.title("Puzzle")
+        self.__root.configure(background=View.__WOOD_BACKGROUND)
 
-        self.on_click_tile = None
-        self.on_shuffle = None
-        self.on_solve = None
-        self.on_reset = None
+        self.__status_bar = StatusBar(self.__root, View.__WOOD_BACKGROUND)
+        self.__board = Board(self.__root, View.__WOOD_BACKGROUND)
+        self.__control_panel = ControlPanel(self.__root, View.__WOOD_BACKGROUND)
 
-        self.status = tk.StringVar(value="")
-        self.new_status = None
-        status_font = font.Font(family="Arial", size=20, weight="bold", slant="italic")
-        tk.Label(self.root, textvariable=self.status, bg=WOOD_BACKGROUND, fg="white",
-                 font=status_font).pack(pady=(6, 10))
+    def add(self, listener):
+        self.__board.add(listener)
+        self.__control_panel.add(listener)
 
-        self.frame = self.create_frame()
-        self.tiles = self.create_board()
-        self.create_controls()
+    def display(self, state, size):
+        self.__board.display(state, size)
 
-    def create_frame(self):
-        outer = tk.Frame(self.root, bg=WOOD_BACKGROUND, bd=18, relief="ridge")
-        outer.pack(padx=14, pady=6)
-        frame = tk.Frame(outer, bg=BOARD_BACKGROUND, bd=10, relief="sunken")
-        frame.pack()
-        return frame
-
-    def create_board(self):
-        tile_font = font.Font(family="Helvetica", size=25, weight="bold")
-        tiles = []
-        for i in range(self.size):
-            row = []
-            for j in range(self.size):
-                tile = tk.Button(self.frame, text="", width=4, height=2, font=tile_font, bg=TILE_BACKGROUND,
-                    fg=TILE_TEXT, activebackground=TILE_ACTIVE, activeforeground=TILE_TEXT, relief="raised",
-                    bd=6, command=lambda r=i, c=j: self.on_click_tile and self.on_click_tile(r, c))
-                tile.grid(row=i, column=j, padx=6, pady=6, sticky="nsew")
-                row.append(tile)
-            tiles.append(row)
-
-        for i in range(self.size):
-            self.frame.grid_rowconfigure(i, weight=1)
-            self.frame.grid_columnconfigure(i, weight=1)
-
-        return tiles
-
-    def create_controls(self):
-        control_frame = tk.Frame(self.root, bg=WOOD_BACKGROUND)
-        control_frame.pack(pady=8)
-
-        buttons = [
-            ("Shuffle", lambda: self.on_shuffle and self.on_shuffle()),
-            ("Solve", lambda: self.on_solve and self.on_solve()),
-            ("Reset", lambda: self.on_reset and self.on_reset()),
-            ("Exit", self.root.quit),
-        ]
-
-        for columns, (text, cmd) in enumerate(buttons):
-            tk.Button(control_frame, text=text, command=cmd, font=("Helvetica", 11),
-                      width=10).grid(row=0, column=columns, padx=6)
-
-    def display(self, puzzle):
-        for i in range(puzzle.size):
-            for j in range(puzzle.size):
-                value = puzzle.state[i * puzzle.size + j]
-                tile = self.tiles[i][j]
-                if value == 0:
-                    tile.config(text="", bg=EMPTY_BACKGROUND, activebackground=EMPTY_BACKGROUND, relief="sunken")
-                else:
-                    tile.config(text=str(value), bg=TILE_BACKGROUND, activebackground=TILE_ACTIVE)
-
-    def show_solution(self, steps):
+    def animate(self, steps, visitor):
         for step in steps:
-            self.display(step)
-            self.root.update()
+            step.accept(visitor)
+            self.__root.update()
             time.sleep(0.3)
 
-    def show_status(self, text: str, duration: int | None = None):
-        if self.new_status is not None:
-            self.root.after_cancel(self.new_status)
-            self.new_status = None
-
-        self.status.set(text)
-        if duration is not None:
-            self.new_status = self.root.after(duration, lambda: self.clear_status())
-
-    def clear_status(self):
-        self.status.set("")
-        self.new_status = None
+    def notify(self, text, duration=None):
+        self.__status_bar.show(text, duration)
 
     def run(self):
-        self.root.mainloop()
+        self.__root.mainloop()

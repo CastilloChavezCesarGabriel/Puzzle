@@ -1,63 +1,64 @@
 import random
 
+from model.manhattan_distance import ManhattanDistance
+from model.tile import Tile
+
 class Puzzle:
     def __init__(self, state=None):
-        self.size = 4
-        self.goal = tuple(range(1, self.size * self.size)) + (0,)
-        self.state = state or self.goal
+        self.__size = 4
+        self.__goal = tuple(range(1, self.__size * self.__size)) + (0,)
+        self.__state = state or self.__goal
 
     def is_solved(self):
-        return self.state == self.goal
+        return self.__state == self.__goal
 
     def move(self):
-        empty_index = self.state.index(0)
-        empty_row, empty_column = divmod(empty_index, self.size)
+        empty_index = self.__state.index(0)
+        empty_row, empty_column = divmod(empty_index, self.__size)
         directions = []
         if empty_row > 0:
-            directions.append(-self.size)
-        if empty_row < self.size - 1:
-            directions.append(self.size)
+            directions.append(-self.__size)
+        if empty_row < self.__size - 1:
+            directions.append(self.__size)
         if empty_column > 0:
             directions.append(-1)
-        if empty_column < self.size - 1:
+        if empty_column < self.__size - 1:
             directions.append(1)
         for offset in directions:
-            yield self.swap(empty_index, empty_index + offset)
+            yield self.__swap(empty_index, empty_index + offset)
 
     def move_tile(self, row, column):
-        empty_index = self.state.index(0)
-        zx, zy = divmod(empty_index, self.size)
+        new_state = Tile(row, column).move(self.__state, self.__size)
+        if new_state is None:
+            return self
+        return Puzzle(new_state)
 
-        if (abs(zx - row) == 1 and zy == column) or (abs(zy - column) == 1 and zx == row):
-            target_index = row * self.size + column
-            return self.swap(empty_index, target_index)
-
-        return self
-
-    def swap(self, i, j):
-        tiles_copy = list(self.state)
-        tiles_copy[i], tiles_copy[j] = tiles_copy[j], tiles_copy[i]
+    def __swap(self, first_index, second_index):
+        tiles_copy = list(self.__state)
+        tiles_copy[first_index], tiles_copy[second_index] = tiles_copy[second_index], tiles_copy[first_index]
         return Puzzle(tuple(tiles_copy))
 
     def shuffle(self, steps):
         shuffled = self
         previous = None
-        for i in range(steps):
+        for step in range(steps):
             moves = list(shuffled.move())
             if previous:
-                moves = [move for move in moves if move.state != previous.state] or moves
+                moves = [move for move in moves if move != previous] or moves
             previous, shuffled = shuffled, random.choice(moves)
         return shuffled
 
+    def accept(self, visitor):
+        visitor.visit(self.__state, self.__size)
+
     def solve_by_manhattan(self):
-        distance = 0
-        for i, tile in enumerate(self.state):
-            if tile == 0:
-                continue
-            goal_row, goal_column = divmod(tile - 1, self.size)
-            current_row, current_column = divmod(i, self.size)
-            distance += abs(goal_row - current_row) + abs(goal_column - current_column)
-        return distance
+        return ManhattanDistance(self.__size).estimate(self.__state)
 
     def __lt__(self, other):
         return self.solve_by_manhattan() < other.solve_by_manhattan()
+
+    def __eq__(self, other):
+        return isinstance(other, Puzzle) and self.__state == other.__state
+
+    def __hash__(self):
+        return hash(self.__state)

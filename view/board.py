@@ -1,0 +1,51 @@
+import tkinter as tk
+from tkinter import font
+from view.frame import Frame
+
+class Board:
+    __TILE_BACKGROUND = "#d8b292"
+    __TILE_ACTIVE = "#e6c5a8"
+    __TILE_TEXT = "#6b3f12"
+    __EMPTY_BACKGROUND = "#2f241a"
+
+    def __init__(self, root, background):
+        self.__size = 4
+        self.__listener = None
+        self.__frame = Frame.create(root, background)
+        self.__tiles = self.__populate()
+
+    def add(self, listener):
+        self.__listener = listener
+
+    def display(self, state, size):
+        for row_index in range(size):
+            for column_index in range(size):
+                value = state[row_index * size + column_index]
+                tile = self.__tiles[row_index][column_index]
+                if value == 0:
+                    tile.config(text="", bg=Board.__EMPTY_BACKGROUND,
+                                activebackground=Board.__EMPTY_BACKGROUND, relief="sunken")
+                else:
+                    tile.config(text=str(value), bg=Board.__TILE_BACKGROUND,
+                                activebackground=Board.__TILE_ACTIVE)
+
+    def __populate(self):
+        tile_font = font.Font(family="Helvetica", size=25, weight="bold")
+        tiles = []
+        for row_index in range(self.__size):
+            row = []
+            for column_index in range(self.__size):
+                tile = tk.Button(self.__frame, text="", width=4, height=2, font=tile_font,
+                    bg=Board.__TILE_BACKGROUND, fg=Board.__TILE_TEXT,
+                    activebackground=Board.__TILE_ACTIVE, activeforeground=Board.__TILE_TEXT,
+                    relief="raised", bd=6,
+                    command=lambda r=row_index, c=column_index: self.__listener and self.__listener.on_click(r, c))
+                tile.grid(row=row_index, column=column_index, padx=6, pady=6, sticky="nsew")
+                row.append(tile)
+            tiles.append(row)
+
+        for index in range(self.__size):
+            self.__frame.grid_rowconfigure(index, weight=1)
+            self.__frame.grid_columnconfigure(index, weight=1)
+
+        return tiles

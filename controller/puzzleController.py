@@ -1,72 +1,77 @@
 from model.puzzle import Puzzle
+from view.puzzle_listener import IPuzzleListener
 
-class Controller:
+
+class Controller(IPuzzleListener):
     def __init__(self, model, view):
-        self.model = model
-        self.puzzle = Puzzle()
-        self.view = view
-        self.solving = False
-        self.duration = 2000
+        self.__model = model
+        self.__puzzle = Puzzle()
+        self.__view = view
+        self.__solving = False
+        self.__duration = 2000
 
-        self.view.on_click_tile = self.handle_click
-        self.view.on_shuffle = self.auto_shuffle
-        self.view.on_solve = self.solve
-        self.view.on_reset = self.reset
+        self.__view.add(self)
+        self.__display()
 
-        self.view.display(self.puzzle)
+    def visit(self, state, size):
+        self.__view.display(state, size)
 
     def run(self):
-        self.view.run()
+        self.__view.run()
 
-    def handle_click(self, row, column):
-        new_puzzle = self.puzzle.move_tile(row, column)
-        if new_puzzle != self.puzzle:
-            self.puzzle = new_puzzle
-            self.view.display(self.puzzle)
-            if self.puzzle.is_solved():
-                self.view.show_status("Solved!", self.duration)
+    def on_click(self, row, column):
+        new_puzzle = self.__puzzle.move_tile(row, column)
+        if new_puzzle != self.__puzzle:
+            self.__puzzle = new_puzzle
+            self.__display()
+            if self.__puzzle.is_solved():
+                self.__view.notify("Solved!", self.__duration)
 
-    def auto_shuffle(self):
-        if self.solving:
-            self.view.show_status("Cannot shuffle while solving...", self.duration)
+    def on_shuffle(self):
+        if self.__guard("Cannot shuffle while solving..."):
             return
 
-        self.solving = True
-        self.puzzle = self.puzzle.shuffle(40)
-        self.view.display(self.puzzle)
-        self.view.show_status("Shuffled!", self.duration)
-        self.solving = False
+        self.__puzzle = self.__puzzle.shuffle(40)
+        self.__display()
+        self.__view.notify("Shuffled!", self.__duration)
+        self.__solving = False
 
-    def reset(self):
-        if self.solving:
-            self.view.show_status("Cannot reset while solving...", self.duration)
+    def on_reset(self):
+        if self.__guard("Cannot reset while solving..."):
             return
 
-        self.solving = True
-        self.puzzle = Puzzle()
-        self.view.display(self.puzzle)
-        self.view.show_status("Reset!", self.duration)
-        self.solving = False
+        self.__puzzle = Puzzle()
+        self.__display()
+        self.__view.notify("Reset!", self.__duration)
+        self.__solving = False
 
-    def solve(self):
-        if self.solving:
-            self.view.show_status("Already solving...", self.duration)
+    def on_solve(self):
+        if self.__guard("Already solving..."):
             return
 
-        if self.puzzle.is_solved():
-            self.view.show_status("Already solved!", self.duration)
+        if self.__puzzle.is_solved():
+            self.__view.notify("Already solved!", self.__duration)
             return
 
-        self.solving = True
-        self.view.show_status("Solving puzzle...", None)
-        solution = self.model.solve(self.puzzle)
+        self.__view.notify("Solving puzzle...", None)
+        solution = self.__model.solve(self.__puzzle)
 
         if not solution:
-            self.view.show_status("No solution!", self.duration)
+            self.__view.notify("No solution!", self.__duration)
         else:
-            self.view.show_solution(solution)
-            self.puzzle = solution[-1]
-            self.view.display(self.puzzle)
-            self.view.show_status("Solved!", self.duration)
+            self.__view.animate(solution, self)
+            self.__puzzle = solution[-1]
+            self.__display()
+            self.__view.notify("Solved!", self.__duration)
 
-        self.solving = False
+        self.__solving = False
+
+    def __display(self):
+        self.__puzzle.accept(self)
+
+    def __guard(self, message):
+        if self.__solving:
+            self.__view.notify(message, self.__duration)
+            return True
+        self.__solving = True
+        return False
