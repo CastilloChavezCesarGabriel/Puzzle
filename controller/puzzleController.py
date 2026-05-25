@@ -1,13 +1,17 @@
-from view.puzzle_listener import IPuzzleListener
+from view.puzzle_click_listener import IPuzzleClickListener
+from view.puzzle_reset_listener import IPuzzleResetListener
+from view.puzzle_shuffle_listener import IPuzzleShuffleListener
+from view.puzzle_solve_listener import IPuzzleSolveListener
 
-class Controller(IPuzzleListener):
+
+class Controller(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolveListener, IPuzzleResetListener):
     def __init__(self, model, view, puzzle):
         self.__model = model
         self.__puzzle = puzzle
         self.__view = view
         self.__solving = False
         self.__duration = 2000
-        self.__view.add(self)
+        self.__view.bind(self)
         self.__display()
 
     def visit(self, state, size):

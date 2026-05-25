@@ -1,26 +1,29 @@
 import tkinter as tk
 
 class ControlPanel:
+    __LABELS = ("Shuffle", "Solve", "Reset", "Exit")
+
     def __init__(self, root, background):
-        self.__listener = None
         self.__root = root
         self.__background = background
-        self.__build()
+        self.__buttons = self.__assemble()
 
-    def add(self, listener):
-        self.__listener = listener
+    def bind(self, listener):
+        commands = [
+            lambda: listener.on_shuffle(),
+            lambda: listener.on_solve(),
+            lambda: listener.on_reset(),
+            self.__root.quit,
+        ]
+        for button, command in zip(self.__buttons, commands):
+            button.configure(command=command)
 
-    def __build(self):
+    def __assemble(self):
         container = tk.Frame(self.__root, bg=self.__background)
         container.pack(pady=8)
-        for column_index, (text, command) in enumerate(self.__define()):
-            tk.Button(container, text=text, command=command, font=("Helvetica", 11),
-                      width=10).grid(row=0, column=column_index, padx=6)
-
-    def __define(self):
-        return [
-            ("Shuffle", lambda: self.__listener and self.__listener.on_shuffle()),
-            ("Solve", lambda: self.__listener and self.__listener.on_solve()),
-            ("Reset", lambda: self.__listener and self.__listener.on_reset()),
-            ("Exit", self.__root.quit),
-        ]
+        buttons = []
+        for column_index, text in enumerate(ControlPanel.__LABELS):
+            button = tk.Button(container, text=text, font=("Helvetica", 11), width=10)
+            button.grid(row=0, column=column_index, padx=6)
+            buttons.append(button)
+        return buttons

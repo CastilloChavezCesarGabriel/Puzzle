@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import font
-from view.frame import Frame
+from view.board_frame import BoardFrame
 
 class Board:
     __TILE_BACKGROUND = "#d8b292"
@@ -8,14 +8,15 @@ class Board:
     __TILE_TEXT = "#6b3f12"
     __EMPTY_BACKGROUND = "#2f241a"
 
-    def __init__(self, root, background):
-        self.__size = 4
-        self.__listener = None
-        self.__frame = Frame.create(root, background)
+    def __init__(self, root, background, size):
+        self.__size = size
+        self.__frame = BoardFrame.create(root, background)
         self.__tiles = self.__populate()
 
-    def add(self, listener):
-        self.__listener = listener
+    def bind(self, listener):
+        for row_index, row in enumerate(self.__tiles):
+            for column_index, tile in enumerate(row):
+                tile.configure(command=lambda r=row_index, c=column_index: listener.on_click(r, c))
 
     def display(self, state, size):
         for row_index in range(size):
@@ -38,8 +39,7 @@ class Board:
                 tile = tk.Button(self.__frame, text="", width=4, height=2, font=tile_font,
                     bg=Board.__TILE_BACKGROUND, fg=Board.__TILE_TEXT,
                     activebackground=Board.__TILE_ACTIVE, activeforeground=Board.__TILE_TEXT,
-                    relief="raised", bd=6,
-                    command=lambda r=row_index, c=column_index: self.__listener and self.__listener.on_click(r, c))
+                    relief="raised", bd=6)
                 tile.grid(row=row_index, column=column_index, padx=6, pady=6, sticky="nsew")
                 row.append(tile)
             tiles.append(row)
