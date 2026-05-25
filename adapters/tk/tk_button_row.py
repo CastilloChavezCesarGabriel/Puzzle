@@ -1,6 +1,6 @@
 import tkinter as tk
 
-class ButtonRow:
+class TkButtonRow:
     def __init__(self, container, controls):
         self.__buttons = controls
         self.__widgets = []
