@@ -9,13 +9,13 @@ class View:
     __WOOD_BACKGROUND = "#c38a06"
     __ANIMATION_DELAY_SECONDS = 0.3
 
-    def __init__(self, size):
+    def __init__(self, size, buttons):
         self.__root = tk.Tk()
         self.__root.title("Puzzle")
         self.__root.configure(background=View.__WOOD_BACKGROUND)
         self.__status_bar = StatusBar(self.__root, View.__WOOD_BACKGROUND)
         self.__board = Board(self.__root, View.__WOOD_BACKGROUND, size)
-        self.__control_panel = ControlPanel(self.__root, View.__WOOD_BACKGROUND)
+        self.__control_panel = ControlPanel(self.__root, View.__WOOD_BACKGROUND, buttons)
 
     def bind(self, listener):
         self.__board.bind(listener)
