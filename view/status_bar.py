@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import font
 
-
 class StatusBar:
     def __init__(self, root, background):
         self.__root = root

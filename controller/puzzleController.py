@@ -1,14 +1,12 @@
-from model.puzzle import Puzzle
 from view.puzzle_listener import IPuzzleListener
 
 class Controller(IPuzzleListener):
-    def __init__(self, model, view):
+    def __init__(self, model, view, puzzle):
         self.__model = model
-        self.__puzzle = Puzzle()
+        self.__puzzle = puzzle
         self.__view = view
         self.__solving = False
         self.__duration = 2000
-
         self.__view.add(self)
         self.__display()
 
@@ -19,7 +17,7 @@ class Controller(IPuzzleListener):
         self.__view.run()
 
     def on_click(self, row, column):
-        new_puzzle = self.__puzzle.move_tile(row, column)
+        new_puzzle = self.__puzzle.move(row, column)
         if new_puzzle != self.__puzzle:
             self.__puzzle = new_puzzle
             self.__display()
@@ -39,7 +37,7 @@ class Controller(IPuzzleListener):
         if self.__guard("Cannot reset while solving..."):
             return
 
-        self.__puzzle = Puzzle()
+        self.__puzzle = self.__puzzle.reset()
         self.__display()
         self.__view.notify("Reset!", self.__duration)
         self.__solving = False

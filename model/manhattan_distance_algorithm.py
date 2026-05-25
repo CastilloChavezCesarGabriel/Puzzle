@@ -1,11 +1,6 @@
 from model.heuristic import Heuristic
 
-
-class ManhattanDistance(Heuristic):
-
-    def __init__(self, size):
-        super().__init__(size)
-
+class ManhattanDistanceAlgorithm(Heuristic):
     def estimate(self, state):
         distance = 0
         for index, tile in enumerate(state):
