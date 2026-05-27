@@ -3,6 +3,7 @@ import unittest
 from model.manhattan_distance_algorithm import ManhattanDistanceAlgorithm
 from model.puzzle import Puzzle
 from tests.helper.puzzle_visitor import PuzzleVisitor
+from shared.position import Position
 
 class PuzzleTest(unittest.TestCase):
     def test_starts_solved_for_size_2(self):
@@ -25,14 +26,14 @@ class PuzzleTest(unittest.TestCase):
 
     def test_returns_self_when_moving_a_non_adjacent_tile(self):
         puzzle = Puzzle(3)
-        self.assertEqual(puzzle.move(0, 0), puzzle)
+        self.assertEqual(puzzle.move(Position(0, 0)), puzzle)
 
     def test_returns_new_puzzle_when_moving_an_adjacent_tile(self):
         puzzle = Puzzle(3)
-        self.assertNotEqual(puzzle.move(1, 2), puzzle)
+        self.assertNotEqual(puzzle.move(Position(1, 2)), puzzle)
 
     def test_move_preserves_size_in_resulting_puzzle(self):
-        moved = Puzzle(3).move(1, 2)
+        moved = Puzzle(3).move(Position(1, 2))
         self.assertNotEqual(moved, Puzzle(4))
 
     def test_reset_returns_solved_state_after_scramble(self):

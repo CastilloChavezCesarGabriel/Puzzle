@@ -2,13 +2,13 @@ from controller.puzzle_animation_solver import PuzzleAnimationSolver
 from controller.puzzle_mover import PuzzleMover
 from controller.puzzle_resetter import PuzzleResetter
 from controller.puzzle_shuffler import PuzzleShuffler
-from model.puzzle_state_visitor import IPuzzleStateVisitor
+from model.puzzle_cell_visitor import IPuzzleCellVisitor
 from view.puzzle_click_listener import IPuzzleClickListener
 from view.puzzle_reset_listener import IPuzzleResetListener
 from view.puzzle_shuffle_listener import IPuzzleShuffleListener
 from view.puzzle_solve_listener import IPuzzleSolveListener
 
-class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolveListener, IPuzzleResetListener, IPuzzleStateVisitor):
+class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolveListener, IPuzzleResetListener, IPuzzleCellVisitor):
     __NOTIFICATION_DURATION = 2000
     __SHUFFLE_GUARD_MESSAGE = "Cannot shuffle while solving..."
     __RESET_GUARD_MESSAGE = "Cannot reset while solving..."
@@ -22,15 +22,15 @@ class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolv
         self.__view.bind(self)
         self.__refresh()
 
-    def visit(self, state, size):
-        self.__view.display(state, size)
+    def visit(self, position, value):
+        self.__view.display(position, value)
 
     def run(self):
         self.__view.run()
 
-    def on_click(self, row, column):
+    def on_click(self, position):
         mover = PuzzleMover(self.__view, PuzzleController.__NOTIFICATION_DURATION)
-        new_puzzle = mover.move(self.__puzzle, row, column)
+        new_puzzle = mover.move(self.__puzzle, position)
         if new_puzzle != self.__puzzle:
             self.__puzzle = new_puzzle
             self.__refresh()

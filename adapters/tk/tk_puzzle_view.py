@@ -21,8 +21,8 @@ class TkPuzzleView(IPuzzleView):
         self.__board.bind(listener)
         self.__control_panel.bind(listener)
 
-    def display(self, state, size):
-        self.__board.display(state, size)
+    def display(self, position, value):
+        self.__board.display(position, value)
 
     def animate(self, steps, visitor):
         for step in steps:

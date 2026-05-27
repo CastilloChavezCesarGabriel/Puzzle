@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import font
 from adapters.tk.tk_board_frame import TkBoardFrame
+from shared.position import Position
 
 class TkBoard:
     __TILE_BACKGROUND = "#d8b292"
@@ -16,15 +17,11 @@ class TkBoard:
         self.__configure()
 
     def bind(self, listener):
-        for row_index, row in enumerate(self.__tiles):
-            for column_index, tile in enumerate(row):
-                tile.configure(command=lambda r=row_index, c=column_index: listener.on_click(r, c))
+        for position, tile in self.__tiles.items():
+            tile.configure(command=lambda p=position: listener.on_click(p))
 
-    def display(self, state, size):
-        for row_index in range(size):
-            for column_index in range(size):
-                value = state[row_index * size + column_index]
-                self.__render(self.__tiles[row_index][column_index], value)
+    def display(self, position, value):
+        self.__render(self.__tiles[position], value)
 
     @staticmethod
     def __render(tile, value):
@@ -36,10 +33,10 @@ class TkBoard:
                         activebackground=TkBoard.__TILE_ACTIVE)
 
     def __populate(self):
-        tiles = []
-        for row_index in range(self.__size):
-            row = [self.__place(row_index, column_index) for column_index in range(self.__size)]
-            tiles.append(row)
+        tiles = {}
+        for row in range(self.__size):
+            for column in range(self.__size):
+                tiles[Position(row, column)] = self.__place(row, column)
         return tiles
 
     def __place(self, row, column):

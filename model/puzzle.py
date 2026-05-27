@@ -1,6 +1,7 @@
 import random
 from model.space import Space
 from model.tile import Tile
+from shared.position import Position
 
 class Puzzle:
     def __init__(self, size, state=None):
@@ -13,11 +14,10 @@ class Puzzle:
 
     def expand(self):
         for _, neighbor_index in Space().expand(self.__state, self.__size):
-            row, column = divmod(neighbor_index, self.__size)
-            yield self.move(row, column)
+            yield self.move(Position(*divmod(neighbor_index, self.__size)))
 
-    def move(self, row, column):
-        new_state = Tile(row, column).move(self.__state, self.__size)
+    def move(self, position):
+        new_state = Tile(position).move(self.__state, self.__size)
         if new_state is None:
             return self
         return Puzzle(self.__size, new_state)
@@ -33,7 +33,10 @@ class Puzzle:
         return shuffled
 
     def accept(self, visitor):
-        visitor.visit(self.__state, self.__size)
+        for row in range(self.__size):
+            for column in range(self.__size):
+                position = Position(row, column)
+                visitor.visit(position, self.__state[position.flatten(self.__size)])
 
     def estimate(self, heuristic):
         return heuristic.estimate(self.__state)

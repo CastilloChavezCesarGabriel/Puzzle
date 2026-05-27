@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class IPuzzleView(ABC):
     @abstractmethod
-    def display(self, state, size):
+    def display(self, position, value):
         pass
 
     @abstractmethod

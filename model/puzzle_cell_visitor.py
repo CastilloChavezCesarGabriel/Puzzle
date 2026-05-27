@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class IPuzzleStateVisitor(ABC):
+class IPuzzleCellVisitor(ABC):
     @abstractmethod
-    def visit(self, state, size):
+    def visit(self, position, value):
         pass
