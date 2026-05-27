@@ -1,5 +1,4 @@
 import random
-
 from model.space import Space
 from model.tile import Tile
 

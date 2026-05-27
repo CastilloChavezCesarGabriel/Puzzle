@@ -1,7 +1,5 @@
 import unittest
-
 from model.space import Space
-
 
 class SpaceTest(unittest.TestCase):
     def test_yields_two_neighbors_when_empty_at_top_left_in_3x3(self):
@@ -89,7 +87,6 @@ class SpaceTest(unittest.TestCase):
     def test_left_edge_neighbors_exclude_left(self):
         neighbors = sorted(pair[1] for pair in Space.expand((1, 2, 3, 0, 4, 5, 6, 7, 8), 3))
         self.assertEqual(neighbors, [0, 4, 6])
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,17 +1,26 @@
+from controller.puzzle_animation_solver import PuzzleAnimationSolver
+from controller.puzzle_mover import PuzzleMover
+from controller.puzzle_resetter import PuzzleResetter
+from controller.puzzle_shuffler import PuzzleShuffler
+from model.puzzle_state_visitor import IPuzzleStateVisitor
 from view.puzzle_click_listener import IPuzzleClickListener
 from view.puzzle_reset_listener import IPuzzleResetListener
 from view.puzzle_shuffle_listener import IPuzzleShuffleListener
 from view.puzzle_solve_listener import IPuzzleSolveListener
 
-class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolveListener, IPuzzleResetListener):
+class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolveListener, IPuzzleResetListener, IPuzzleStateVisitor):
+    __NOTIFICATION_DURATION = 2000
+    __SHUFFLE_GUARD_MESSAGE = "Cannot shuffle while solving..."
+    __RESET_GUARD_MESSAGE = "Cannot reset while solving..."
+    __SOLVE_GUARD_MESSAGE = "Already solving..."
+
     def __init__(self, model, view, puzzle):
         self.__model = model
         self.__puzzle = puzzle
         self.__view = view
         self.__solving = False
-        self.__duration = 2000
         self.__view.bind(self)
-        self.__display()
+        self.__refresh()
 
     def visit(self, state, size):
         self.__view.display(state, size)
@@ -20,59 +29,48 @@ class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolv
         self.__view.run()
 
     def on_click(self, row, column):
-        new_puzzle = self.__puzzle.move(row, column)
+        mover = PuzzleMover(self.__view, PuzzleController.__NOTIFICATION_DURATION)
+        new_puzzle = mover.move(self.__puzzle, row, column)
         if new_puzzle != self.__puzzle:
             self.__puzzle = new_puzzle
-            self.__display()
-            if self.__puzzle.is_solved():
-                self.__view.notify("Solved!", self.__duration)
+            self.__refresh()
 
     def on_shuffle(self):
-        if self.__guard("Cannot shuffle while solving..."):
+        if self.__guard(PuzzleController.__SHUFFLE_GUARD_MESSAGE):
             return
 
-        self.__puzzle = self.__puzzle.shuffle(40)
-        self.__display()
-        self.__view.notify("Shuffled!", self.__duration)
+        shuffler = PuzzleShuffler(self.__view, PuzzleController.__NOTIFICATION_DURATION)
+        self.__puzzle = shuffler.shuffle(self.__puzzle)
+
+        self.__refresh()
         self.__solving = False
 
     def on_reset(self):
-        if self.__guard("Cannot reset while solving..."):
+        if self.__guard(PuzzleController.__RESET_GUARD_MESSAGE):
             return
 
-        self.__puzzle = self.__puzzle.reset()
-        self.__display()
-        self.__view.notify("Reset!", self.__duration)
+        resetter = PuzzleResetter(self.__view, PuzzleController.__NOTIFICATION_DURATION)
+        self.__puzzle = resetter.reset(self.__puzzle)
+
+        self.__refresh()
         self.__solving = False
 
     def on_solve(self):
-        if self.__puzzle.is_solved():
-            self.__view.notify("Already solved!", self.__duration)
+        if self.__guard(PuzzleController.__SOLVE_GUARD_MESSAGE):
             return
 
-        if self.__guard("Already solving..."):
-            return
+        solver = PuzzleAnimationSolver(self.__model, self.__view, self)
+        self.__puzzle = solver.solve(self.__puzzle, PuzzleController.__NOTIFICATION_DURATION)
 
-        self.__resolve()
+        self.__refresh()
         self.__solving = False
 
-    def __resolve(self):
-        self.__view.notify("Solving puzzle...", None)
-        solution = self.__model.solve(self.__puzzle)
-        if not solution:
-            self.__view.notify("No solution!", self.__duration)
-            return
-        self.__view.animate(solution, self)
-        self.__puzzle = solution[-1]
-        self.__display()
-        self.__view.notify("Solved!", self.__duration)
-
-    def __display(self):
+    def __refresh(self):
         self.__puzzle.accept(self)
 
     def __guard(self, message):
         if self.__solving:
-            self.__view.notify(message, self.__duration)
+            self.__view.notify(message, PuzzleController.__NOTIFICATION_DURATION)
             return True
         self.__solving = True
         return False

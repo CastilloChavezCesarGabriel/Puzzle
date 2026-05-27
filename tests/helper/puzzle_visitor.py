@@ -1,4 +1,6 @@
-class PuzzleVisitor:
+from model.puzzle_state_visitor import IPuzzleStateVisitor
+
+class PuzzleVisitor(IPuzzleStateVisitor):
     def __init__(self, expected_state, expected_size):
         self.__expected_state = expected_state
         self.__expected_size = expected_size

@@ -1,7 +1,5 @@
 import unittest
-
 from model.tile import Tile
-
 
 class TileTest(unittest.TestCase):
     def test_moves_tile_above_empty_in_3x3(self):
@@ -80,7 +78,6 @@ class TileTest(unittest.TestCase):
 
     def test_moves_with_empty_at_top_edge(self):
         self.assertEqual(Tile(1, 1).move((1, 0, 2, 3, 4, 5, 6, 7, 8), 3), (1, 4, 2, 3, 0, 5, 6, 7, 8))
-
 
 if __name__ == "__main__":
     unittest.main()

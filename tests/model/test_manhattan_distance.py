@@ -1,7 +1,5 @@
 import unittest
-
 from model.manhattan_distance_algorithm import ManhattanDistanceAlgorithm
-
 
 class ManhattanDistanceTest(unittest.TestCase):
     def test_returns_zero_for_solved_2x2(self):
@@ -73,7 +71,6 @@ class ManhattanDistanceTest(unittest.TestCase):
         state = list(range(1, 16)) + [0]
         state[0], state[5] = state[5], state[0]
         self.assertEqual(ManhattanDistanceAlgorithm(4).estimate(tuple(state)), 4)
-
 
 if __name__ == "__main__":
     unittest.main()

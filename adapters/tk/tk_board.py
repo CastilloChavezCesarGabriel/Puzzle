@@ -11,7 +11,9 @@ class TkBoard:
     def __init__(self, root, background, size):
         self.__size = size
         self.__frame = TkBoardFrame.create(root, background)
+        self.__font = font.Font(family="Helvetica", size=25, weight="bold")
         self.__tiles = self.__populate()
+        self.__configure()
 
     def bind(self, listener):
         for row_index, row in enumerate(self.__tiles):
@@ -22,29 +24,31 @@ class TkBoard:
         for row_index in range(size):
             for column_index in range(size):
                 value = state[row_index * size + column_index]
-                tile = self.__tiles[row_index][column_index]
-                if value == 0:
-                    tile.config(text="", bg=TkBoard.__EMPTY_BACKGROUND,
-                                activebackground=TkBoard.__EMPTY_BACKGROUND, relief="sunken")
-                else:
-                    tile.config(text=str(value), bg=TkBoard.__TILE_BACKGROUND,
-                                activebackground=TkBoard.__TILE_ACTIVE)
+                self.__render(self.__tiles[row_index][column_index], value)
+
+    @staticmethod
+    def __render(tile, value):
+        if value == 0:
+            tile.config(text="", bg=TkBoard.__EMPTY_BACKGROUND,
+                        activebackground=TkBoard.__EMPTY_BACKGROUND, relief="sunken")
+        else:
+            tile.config(text=str(value), bg=TkBoard.__TILE_BACKGROUND,
+                        activebackground=TkBoard.__TILE_ACTIVE)
 
     def __populate(self):
-        tile_font = font.Font(family="Helvetica", size=25, weight="bold")
         tiles = []
         for row_index in range(self.__size):
-            row = []
-            for column_index in range(self.__size):
-                tile = tk.Button(self.__frame, text="", width=4, height=2, font=tile_font,
-                    bg=TkBoard.__TILE_BACKGROUND, fg=TkBoard.__TILE_TEXT,
-                    activebackground=TkBoard.__TILE_ACTIVE, activeforeground=TkBoard.__TILE_TEXT,
-                    relief="raised", bd=6)
-                tile.grid(row=row_index, column=column_index, padx=6, pady=6, sticky="nsew")
-                row.append(tile)
+            row = [self.__place(row_index, column_index) for column_index in range(self.__size)]
             tiles.append(row)
-        self.__configure()
         return tiles
+
+    def __place(self, row, column):
+        tile = tk.Button(self.__frame, text="", width=4, height=2, font=self.__font,
+            bg=TkBoard.__TILE_BACKGROUND, fg=TkBoard.__TILE_TEXT,
+            activebackground=TkBoard.__TILE_ACTIVE, activeforeground=TkBoard.__TILE_TEXT,
+            relief="raised", bd=6)
+        tile.grid(row=row, column=column, padx=6, pady=6, sticky="nsew")
+        return tile
 
     def __configure(self):
         for index in range(self.__size):

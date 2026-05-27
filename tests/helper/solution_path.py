@@ -1,6 +1,6 @@
 class SolutionPath:
     def __init__(self, steps):
-        self.__steps = steps
+        self.__steps = list(steps)
 
     def solves(self, input_puzzle):
         if self.__steps[0] != input_puzzle:

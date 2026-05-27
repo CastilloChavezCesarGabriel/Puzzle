@@ -11,14 +11,19 @@ class TkStatusBar:
                  fg="white", font=status_font).pack(pady=(6, 10))
 
     def show(self, text, duration=None):
-        if self.__pending is not None:
-            self.__root.after_cancel(self.__pending)
-            self.__pending = None
-
+        self.__cancel()
         self.__status.set(text)
         if duration is not None:
-            self.__pending = self.__root.after(duration, lambda: self.clear())
+            self.__schedule(duration)
 
     def clear(self):
         self.__status.set("")
         self.__pending = None
+
+    def __cancel(self):
+        if self.__pending is not None:
+            self.__root.after_cancel(self.__pending)
+            self.__pending = None
+
+    def __schedule(self, duration):
+        self.__pending = self.__root.after(duration, lambda: self.clear())

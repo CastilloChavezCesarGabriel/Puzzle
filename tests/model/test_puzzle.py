@@ -1,10 +1,8 @@
 import random
 import unittest
-
 from model.manhattan_distance_algorithm import ManhattanDistanceAlgorithm
 from model.puzzle import Puzzle
 from tests.helper.puzzle_visitor import PuzzleVisitor
-
 
 class PuzzleTest(unittest.TestCase):
     def test_starts_solved_for_size_2(self):
@@ -80,13 +78,16 @@ class PuzzleTest(unittest.TestCase):
         puzzle = Puzzle(3, (0, 1, 2, 3, 4, 5, 6, 7, 8))
         self.assertGreater(puzzle.estimate(ManhattanDistanceAlgorithm(3)), 0)
 
-    def test_forwards_state_and_size_when_accepting_a_visitor(self):
+    @staticmethod
+    def test_forwards_state_and_size_when_accepting_a_visitor():
         Puzzle(3).accept(PuzzleVisitor((1, 2, 3, 4, 5, 6, 7, 8, 0), 3))
 
-    def test_forwards_size_2_when_accepting_a_visitor(self):
+    @staticmethod
+    def test_forwards_size_2_when_accepting_a_visitor():
         Puzzle(2).accept(PuzzleVisitor((1, 2, 3, 0), 2))
 
-    def test_forwards_size_4_when_accepting_a_visitor(self):
+    @staticmethod
+    def test_forwards_size_4_when_accepting_a_visitor():
         Puzzle(4).accept(PuzzleVisitor(tuple(range(1, 16)) + (0,), 4))
 
     def test_equates_puzzles_sharing_the_same_state(self):
@@ -101,7 +102,6 @@ class PuzzleTest(unittest.TestCase):
     def test_shuffle_returns_a_puzzle_instance(self):
         random.seed(0)
         self.assertIsInstance(Puzzle(3).shuffle(10), Puzzle)
-
 
 if __name__ == "__main__":
     unittest.main()

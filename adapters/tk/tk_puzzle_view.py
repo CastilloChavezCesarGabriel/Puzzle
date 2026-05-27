@@ -3,7 +3,7 @@ import time
 from adapters.tk.tk_board import TkBoard
 from adapters.tk.tk_control_panel import TkControlPanel
 from adapters.tk.tk_status_bar import TkStatusBar
-from view.i_puzzle_view import IPuzzleView
+from view.puzzle_view import IPuzzleView
 
 class TkPuzzleView(IPuzzleView):
     __WOOD_BACKGROUND = "#c38a06"
