@@ -79,17 +79,14 @@ class PuzzleTest(unittest.TestCase):
         puzzle = Puzzle(3, (0, 1, 2, 3, 4, 5, 6, 7, 8))
         self.assertGreater(puzzle.estimate(ManhattanDistanceAlgorithm(3)), 0)
 
-    @staticmethod
-    def test_forwards_state_and_size_when_accepting_a_visitor():
-        Puzzle(3).accept(PuzzleVisitor((1, 2, 3, 4, 5, 6, 7, 8, 0), 3))
+    def test_forwards_state_and_size_when_accepting_a_visitor(self):
+        self.assertIsNone(Puzzle(3).accept(PuzzleVisitor((1, 2, 3, 4, 5, 6, 7, 8, 0), 3)))
 
-    @staticmethod
-    def test_forwards_size_2_when_accepting_a_visitor():
-        Puzzle(2).accept(PuzzleVisitor((1, 2, 3, 0), 2))
+    def test_forwards_size_2_when_accepting_a_visitor(self):
+        self.assertIsNone(Puzzle(2).accept(PuzzleVisitor((1, 2, 3, 0), 2)))
 
-    @staticmethod
-    def test_forwards_size_4_when_accepting_a_visitor():
-        Puzzle(4).accept(PuzzleVisitor(tuple(range(1, 16)) + (0,), 4))
+    def test_forwards_size_4_when_accepting_a_visitor(self):
+        self.assertIsNone(Puzzle(4).accept(PuzzleVisitor(tuple(range(1, 16)) + (0,), 4)))
 
     def test_equates_puzzles_sharing_the_same_state(self):
         self.assertEqual(Puzzle(3), Puzzle(3))

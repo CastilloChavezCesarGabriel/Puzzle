@@ -11,7 +11,7 @@ class TkBoard:
 
     def __init__(self, root, background, size):
         self.__size = size
-        self.__frame = TkBoardFrame.create(root, background)
+        self.__frame = TkBoardFrame(root, background).create()
         self.__font = font.Font(family="Helvetica", size=25, weight="bold")
         self.__tiles = self.__populate()
         self.__configure()
@@ -23,14 +23,13 @@ class TkBoard:
     def display(self, position, value):
         self.__render(self.__tiles[position], value)
 
-    @staticmethod
-    def __render(tile, value):
+    def __render(self, tile, value):
         if value == 0:
-            tile.config(text="", bg=TkBoard.__EMPTY_BACKGROUND,
-                        activebackground=TkBoard.__EMPTY_BACKGROUND, relief="sunken")
+            tile.config(text="", bg=self.__EMPTY_BACKGROUND,
+                        activebackground=self.__EMPTY_BACKGROUND, relief="sunken")
         else:
-            tile.config(text=str(value), bg=TkBoard.__TILE_BACKGROUND,
-                        activebackground=TkBoard.__TILE_ACTIVE)
+            tile.config(text=str(value), bg=self.__TILE_BACKGROUND,
+                        activebackground=self.__TILE_ACTIVE)
 
     def __populate(self):
         tiles = {}
@@ -41,8 +40,8 @@ class TkBoard:
 
     def __place(self, row, column):
         tile = tk.Button(self.__frame, text="", width=4, height=2, font=self.__font,
-            bg=TkBoard.__TILE_BACKGROUND, fg=TkBoard.__TILE_TEXT,
-            activebackground=TkBoard.__TILE_ACTIVE, activeforeground=TkBoard.__TILE_TEXT,
+            bg=self.__TILE_BACKGROUND, fg=self.__TILE_TEXT,
+            activebackground=self.__TILE_ACTIVE, activeforeground=self.__TILE_TEXT,
             relief="raised", bd=6)
         tile.grid(row=row, column=column, padx=6, pady=6, sticky="nsew")
         return tile

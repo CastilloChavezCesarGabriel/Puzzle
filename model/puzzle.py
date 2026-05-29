@@ -13,7 +13,7 @@ class Puzzle:
         return self.__state == self.__goal
 
     def expand(self):
-        for _, neighbor_index in Space().expand(self.__state, self.__size):
+        for _, neighbor_index in Space(self.__state, self.__size).expand():
             yield self.move(Position(*divmod(neighbor_index, self.__size)))
 
     def move(self, position):
