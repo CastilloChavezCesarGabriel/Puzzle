@@ -40,31 +40,28 @@ class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolv
         if self.__guard(PuzzleController.__SHUFFLE_GUARD_MESSAGE):
             return
 
+        self.__lock()
         shuffler = PuzzleShuffler(self.__view, PuzzleController.__NOTIFICATION_DURATION)
         self.__puzzle = shuffler.shuffle(self.__puzzle)
-
-        self.__refresh()
-        self.__solving = False
+        self.__settle()
 
     def on_reset(self):
         if self.__guard(PuzzleController.__RESET_GUARD_MESSAGE):
             return
 
+        self.__lock()
         resetter = PuzzleResetter(self.__view, PuzzleController.__NOTIFICATION_DURATION)
         self.__puzzle = resetter.reset(self.__puzzle)
-
-        self.__refresh()
-        self.__solving = False
+        self.__settle()
 
     def on_solve(self):
         if self.__guard(PuzzleController.__SOLVE_GUARD_MESSAGE):
             return
 
+        self.__lock()
         solver = PuzzleAnimationSolver(self.__model, self.__view, self)
         self.__puzzle = solver.solve(self.__puzzle, PuzzleController.__NOTIFICATION_DURATION)
-
-        self.__refresh()
-        self.__solving = False
+        self.__settle()
 
     def __refresh(self):
         self.__puzzle.accept(self)
@@ -73,5 +70,11 @@ class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolv
         if self.__solving:
             self.__view.notify(message, PuzzleController.__NOTIFICATION_DURATION)
             return True
-        self.__solving = True
         return False
+
+    def __lock(self):
+        self.__solving = True
+
+    def __settle(self):
+        self.__refresh()
+        self.__solving = False
