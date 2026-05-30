@@ -3,7 +3,7 @@ import unittest
 from model.manhattan_distance_algorithm import ManhattanDistanceAlgorithm
 from model.puzzle import Puzzle
 from tests.helper.puzzle_visitor import PuzzleVisitor
-from shared.position import Position
+from model.position import Position
 
 class PuzzleTest(unittest.TestCase):
     def test_starts_solved_for_size_2(self):

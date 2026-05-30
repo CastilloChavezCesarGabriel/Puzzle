@@ -6,10 +6,10 @@ class Space:
     def expand(self):
         index = self.__state.index(0)
         row, column = divmod(index, self.__size)
-        moves = []
+        neighbors = []
         for axis, step in ((row, self.__size), (column, 1)):
             if axis > 0:
-                moves.append((index, index - step))
+                neighbors.append(index - step)
             if axis < self.__size - 1:
-                moves.append((index, index + step))
-        return moves
+                neighbors.append(index + step)
+        return neighbors

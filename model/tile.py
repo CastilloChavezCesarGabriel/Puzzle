@@ -1,4 +1,4 @@
-from shared.position import Position
+from model.position import Position
 
 class Tile:
     def __init__(self, position):

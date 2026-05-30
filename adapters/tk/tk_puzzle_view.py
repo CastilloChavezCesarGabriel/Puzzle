@@ -9,20 +9,20 @@ class TkPuzzleView(IPuzzleView):
     __WOOD_BACKGROUND = "#c38a06"
     __ANIMATION_DELAY_SECONDS = 0.3
 
-    def __init__(self, size, controls):
+    def __init__(self, controls):
         self.__root = tk.Tk()
         self.__root.title("Puzzle")
         self.__root.configure(background=TkPuzzleView.__WOOD_BACKGROUND)
         self.__status_bar = TkStatusBar(self.__root, TkPuzzleView.__WOOD_BACKGROUND)
-        self.__board = TkBoard(self.__root, TkPuzzleView.__WOOD_BACKGROUND, size)
+        self.__board = TkBoard(self.__root, TkPuzzleView.__WOOD_BACKGROUND)
         self.__control_panel = TkControlPanel(self.__root, TkPuzzleView.__WOOD_BACKGROUND, controls)
 
     def bind(self, listener):
         self.__board.bind(listener)
         self.__control_panel.bind(listener)
 
-    def display(self, position, value):
-        self.__board.display(position, value)
+    def display(self, row, column, value):
+        self.__board.display(row, column, value)
 
     def animate(self, steps, visitor):
         for step in steps:

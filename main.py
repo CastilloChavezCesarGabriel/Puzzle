@@ -9,9 +9,9 @@ from view.puzzle_shuffle_button import PuzzleShuffleButton
 from view.puzzle_solve_button import PuzzleSolveButton
 
 if __name__ == "__main__":
-    size = 4
-    manhattan_distance_algorithm = ManhattanDistanceAlgorithm(size)
-    solver = HeuristicPuzzleSolver(manhattan_distance_algorithm)
+    size = 2
+    algorithm = ManhattanDistanceAlgorithm(size)
+    solver = HeuristicPuzzleSolver(algorithm)
 
     buttons = [
         PuzzleShuffleButton(),
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         TkPuzzleExitButton(),
     ]
 
-    view = TkPuzzleView(size, buttons)
+    view = TkPuzzleView(buttons)
     puzzle = Puzzle(size)
     controller = PuzzleController(solver, view, puzzle)
     controller.run()

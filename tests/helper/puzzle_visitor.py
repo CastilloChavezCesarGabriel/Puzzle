@@ -5,7 +5,7 @@ class PuzzleVisitor(IPuzzleCellVisitor):
         self.__expected_state = expected_state
         self.__expected_size = expected_size
 
-    def visit(self, position, value):
-        expected_value = self.__expected_state[position.flatten(self.__expected_size)]
+    def visit(self, row, column, value):
+        expected_value = self.__expected_state[row * self.__expected_size + column]
         if value != expected_value:
             raise AssertionError(f"expected {expected_value}, got {value}")

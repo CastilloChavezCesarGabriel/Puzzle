@@ -1,7 +1,7 @@
 import random
+from model.position import Position
 from model.space import Space
 from model.tile import Tile
-from shared.position import Position
 
 class Puzzle:
     def __init__(self, size, state=None):
@@ -13,7 +13,7 @@ class Puzzle:
         return self.__state == self.__goal
 
     def expand(self):
-        for _, neighbor_index in Space(self.__state, self.__size).expand():
+        for neighbor_index in Space(self.__state, self.__size).expand():
             yield self.move(Position(*divmod(neighbor_index, self.__size)))
 
     def move(self, position):
@@ -25,7 +25,7 @@ class Puzzle:
     def shuffle(self, steps):
         shuffled = self
         previous = None
-        for step in range(steps):
+        for _ in range(steps):
             moves = list(shuffled.expand())
             if previous:
                 moves = [move for move in moves if move != previous] or moves
@@ -35,8 +35,7 @@ class Puzzle:
     def accept(self, visitor):
         for row in range(self.__size):
             for column in range(self.__size):
-                position = Position(row, column)
-                visitor.visit(position, self.__state[position.flatten(self.__size)])
+                visitor.visit(row, column, self.__state[Position(row, column).flatten(self.__size)])
 
     def estimate(self, heuristic):
         return heuristic.estimate(self.__state)

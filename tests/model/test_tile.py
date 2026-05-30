@@ -1,6 +1,6 @@
 import unittest
 from model.tile import Tile
-from shared.position import Position
+from model.position import Position
 
 class TileTest(unittest.TestCase):
     def test_moves_tile_above_empty_in_3x3(self):

@@ -2,6 +2,7 @@ from controller.puzzle_animation_solver import PuzzleAnimationSolver
 from controller.puzzle_mover import PuzzleMover
 from controller.puzzle_resetter import PuzzleResetter
 from controller.puzzle_shuffler import PuzzleShuffler
+from model.position import Position
 from model.puzzle_cell_visitor import IPuzzleCellVisitor
 from view.puzzle_click_listener import IPuzzleClickListener
 from view.puzzle_reset_listener import IPuzzleResetListener
@@ -19,18 +20,18 @@ class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolv
         self.__puzzle = puzzle
         self.__view = view
         self.__solving = False
-        self.__view.bind(self)
         self.__refresh()
+        self.__view.bind(self)
 
-    def visit(self, position, value):
-        self.__view.display(position, value)
+    def visit(self, row, column, value):
+        self.__view.display(row, column, value)
 
     def run(self):
         self.__view.run()
 
-    def on_click(self, position):
+    def on_click(self, row, column):
         mover = PuzzleMover(self.__view, PuzzleController.__NOTIFICATION_DURATION)
-        new_puzzle = mover.move(self.__puzzle, position)
+        new_puzzle = mover.move(self.__puzzle, Position(row, column))
         if new_puzzle != self.__puzzle:
             self.__puzzle = new_puzzle
             self.__refresh()

@@ -29,14 +29,9 @@ class SpaceTest(unittest.TestCase):
     def test_yields_four_neighbors_when_empty_at_center_in_3x3(self):
         self.assertEqual(len(Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()), 4)
 
-    def test_each_pair_starts_with_empty_index(self):
-        pairs = Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()
-        for empty, _ in pairs:
-            self.assertEqual(empty, 4)
-
-    def test_each_neighbor_differs_from_empty_by_one_step(self):
-        pairs = Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()
-        for empty, neighbor in pairs:
+    def test_each_neighbor_is_one_step_from_center_empty(self):
+        empty = 4
+        for neighbor in Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand():
             row_distance = abs(empty // 3 - neighbor // 3)
             column_distance = abs(empty % 3 - neighbor % 3)
             self.assertEqual(row_distance + column_distance, 1)
@@ -64,29 +59,21 @@ class SpaceTest(unittest.TestCase):
         self.assertIsInstance(Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand(), list)
 
     def test_all_neighbors_within_bounds_in_3x3(self):
-        pairs = Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()
-        for _, neighbor in pairs:
+        for neighbor in Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand():
             self.assertTrue(0 <= neighbor < 9)
 
-    def test_pairs_are_distinct_when_empty_at_center(self):
-        pairs = Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()
-        self.assertEqual(len(set(pairs)), len(pairs))
-
     def test_neighbors_are_distinct_when_empty_at_center(self):
-        neighbors = [pair[1] for pair in Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()]
+        neighbors = Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()
         self.assertEqual(len(set(neighbors)), len(neighbors))
 
     def test_center_neighbors_cover_all_four_directions(self):
-        neighbors = sorted(pair[1] for pair in Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand())
-        self.assertEqual(neighbors, [1, 3, 5, 7])
+        self.assertEqual(sorted(Space((1, 2, 3, 4, 0, 5, 6, 7, 8), 3).expand()), [1, 3, 5, 7])
 
     def test_top_edge_neighbors_exclude_above(self):
-        neighbors = sorted(pair[1] for pair in Space((1, 0, 2, 3, 4, 5, 6, 7, 8), 3).expand())
-        self.assertEqual(neighbors, [0, 2, 4])
+        self.assertEqual(sorted(Space((1, 0, 2, 3, 4, 5, 6, 7, 8), 3).expand()), [0, 2, 4])
 
     def test_left_edge_neighbors_exclude_left(self):
-        neighbors = sorted(pair[1] for pair in Space((1, 2, 3, 0, 4, 5, 6, 7, 8), 3).expand())
-        self.assertEqual(neighbors, [0, 4, 6])
+        self.assertEqual(sorted(Space((1, 2, 3, 0, 4, 5, 6, 7, 8), 3).expand()), [0, 4, 6])
 
 if __name__ == "__main__":
     unittest.main()
