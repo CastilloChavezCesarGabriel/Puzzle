@@ -18,9 +18,10 @@ class TkBoard:
             tile.configure(command=lambda r=row, c=column: listener.on_click(r, c))
 
     def display(self, row, column, value):
-        if (row, column) not in self.__tiles:
-            self.__tiles[(row, column)] = self.__place(row, column)
-        self.__render(self.__tiles[(row, column)], value)
+        key = (row, column)
+        if key not in self.__tiles:
+            self.__tiles[key] = self.__place(row, column)
+        self.__render(self.__tiles[key], value)
 
     def __render(self, tile, value):
         if value == 0:
