@@ -35,7 +35,8 @@ class Puzzle:
     def accept(self, visitor):
         for row in range(self.__size):
             for column in range(self.__size):
-                visitor.visit(row, column, self.__state[Position(row, column).flatten(self.__size)])
+                position = Position(row, column)
+                visitor.visit(row, column, self.__state[position.flatten(self.__size)])
 
     def estimate(self, heuristic):
         return heuristic.estimate(self.__state)

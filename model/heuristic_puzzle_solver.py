@@ -1,4 +1,4 @@
-from model.heuristic_puzzle_search import HeuristicPuzzleSearch
+from model.heuristic_search import HeuristicSearch
 from model.solution import Solution
 
 class HeuristicPuzzleSolver:
@@ -6,4 +6,4 @@ class HeuristicPuzzleSolver:
         self.__heuristic = heuristic
 
     def solve(self, puzzle):
-        return Solution(HeuristicPuzzleSearch(puzzle, self.__heuristic).run())
+        return Solution(HeuristicSearch(puzzle, self.__heuristic).run())

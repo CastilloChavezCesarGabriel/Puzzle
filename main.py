@@ -2,15 +2,15 @@ from adapters.tk.tk_puzzle_exit_button import TkPuzzleExitButton
 from adapters.tk.tk_puzzle_view import TkPuzzleView
 from controller.puzzle_controller import PuzzleController
 from model.heuristic_puzzle_solver import HeuristicPuzzleSolver
-from model.manhattan_distance_algorithm import ManhattanDistanceAlgorithm
+from model.manhattan_distance import ManhattanDistance
 from model.puzzle import Puzzle
 from view.puzzle_reset_button import PuzzleResetButton
 from view.puzzle_shuffle_button import PuzzleShuffleButton
 from view.puzzle_solve_button import PuzzleSolveButton
 
 if __name__ == "__main__":
-    size = 2
-    algorithm = ManhattanDistanceAlgorithm(size)
+    size = 3
+    algorithm = ManhattanDistance(size)
     solver = HeuristicPuzzleSolver(algorithm)
 
     buttons = [

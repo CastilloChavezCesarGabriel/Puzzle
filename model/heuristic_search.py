@@ -1,21 +1,15 @@
 import heapq
 import itertools
 
-class HeuristicPuzzleSearch:
+class HeuristicSearch:
     def __init__(self, puzzle, heuristic):
-        self.__puzzle = puzzle
         self.__heuristic = heuristic
         self.__counter = itertools.count()
-        self.__frontier = []
-        self.__history = {}
+        priority = puzzle.estimate(heuristic)
+        self.__frontier = [(priority, next(self.__counter), puzzle)]
+        self.__history = {puzzle: (0, None)}
 
     def run(self):
-        estimated = self.__puzzle.estimate(self.__heuristic)
-        self.__frontier = [(estimated, next(self.__counter), self.__puzzle)]
-        self.__history = {self.__puzzle: (0, None)}
-        return self.__explore()
-
-    def __explore(self):
         while self.__frontier:
             _, _, current = heapq.heappop(self.__frontier)
             if current.is_solved():

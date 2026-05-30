@@ -1,6 +1,6 @@
 import random
 import unittest
-from model.manhattan_distance_algorithm import ManhattanDistanceAlgorithm
+from model.manhattan_distance import ManhattanDistance
 from model.puzzle import Puzzle
 from tests.helper.puzzle_visitor import PuzzleVisitor
 from model.position import Position
@@ -73,11 +73,11 @@ class PuzzleTest(unittest.TestCase):
             self.assertIsInstance(neighbor, Puzzle)
 
     def test_returns_zero_when_estimating_solved_state(self):
-        self.assertEqual(Puzzle(3).estimate(ManhattanDistanceAlgorithm(3)), 0)
+        self.assertEqual(Puzzle(3).estimate(ManhattanDistance(3)), 0)
 
     def test_returns_positive_estimate_for_scrambled_state(self):
         puzzle = Puzzle(3, (0, 1, 2, 3, 4, 5, 6, 7, 8))
-        self.assertGreater(puzzle.estimate(ManhattanDistanceAlgorithm(3)), 0)
+        self.assertGreater(puzzle.estimate(ManhattanDistance(3)), 0)
 
     def test_forwards_state_and_size_when_accepting_a_visitor(self):
         self.assertIsNone(Puzzle(3).accept(PuzzleVisitor((1, 2, 3, 4, 5, 6, 7, 8, 0), 3)))
