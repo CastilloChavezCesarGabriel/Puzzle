@@ -27,11 +27,14 @@ class TkPuzzleView(IPuzzleView):
     def animate(self, steps, visitor):
         for step in steps:
             step.accept(visitor)
-            self.__root.update()
-            time.sleep(TkPuzzleView.__ANIMATION_DELAY_SECONDS)
+            self.__refresh()
 
     def notify(self, text, duration=None):
         self.__status_bar.show(text, duration)
 
     def run(self):
         self.__root.mainloop()
+
+    def __refresh(self):
+        self.__root.update()
+        time.sleep(TkPuzzleView.__ANIMATION_DELAY_SECONDS)

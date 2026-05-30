@@ -26,4 +26,4 @@ class TkStatusBar:
             self.__pending = None
 
     def __schedule(self, duration):
-        self.__pending = self.__root.after(duration, lambda: self.clear())
+        self.__pending = self.__root.after(duration, self.clear)
