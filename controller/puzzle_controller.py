@@ -17,8 +17,8 @@ class PuzzleController(IPuzzleClickListener, IPuzzleShuffleListener, IPuzzleSolv
 
     def __init__(self, model, view, puzzle):
         self.__model = model
-        self.__puzzle = puzzle
         self.__view = view
+        self.__puzzle = puzzle
         self.__solving = False
         self.__refresh()
         self.__view.bind(self)
