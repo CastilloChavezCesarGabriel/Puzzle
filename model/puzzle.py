@@ -1,14 +1,12 @@
 import random
 from model.position import Position
 from model.puzzle_size_validator import PuzzleSizeValidator
-from model.puzzle_state_validator import PuzzleStateValidator
 from model.space import Space
 from model.tile import Tile
 
 class Puzzle:
     def __init__(self, size, state=None):
         PuzzleSizeValidator(size)
-        PuzzleStateValidator(state, size)
         self.__size = size
         self.__goal = tuple(range(1, size * size)) + (0,)
         self.__state = state or self.__goal
