@@ -2,7 +2,7 @@ import random
 import unittest
 from model.manhattan_distance import ManhattanDistance
 from model.puzzle import Puzzle
-from tests.helper.puzzle_visitor import PuzzleVisitor
+from tests.helper.puzzle_visitor import PuzzleAssertionVisitor
 from model.position import Position
 
 class PuzzleTest(unittest.TestCase):
@@ -80,13 +80,13 @@ class PuzzleTest(unittest.TestCase):
         self.assertGreater(puzzle.estimate(ManhattanDistance(3)), 0)
 
     def test_forwards_state_and_size_when_accepting_a_visitor(self):
-        self.assertIsNone(Puzzle(3).accept(PuzzleVisitor((1, 2, 3, 4, 5, 6, 7, 8, 0), 3)))
+        self.assertIsNone(Puzzle(3).accept(PuzzleAssertionVisitor((1, 2, 3, 4, 5, 6, 7, 8, 0), 3)))
 
     def test_forwards_size_2_when_accepting_a_visitor(self):
-        self.assertIsNone(Puzzle(2).accept(PuzzleVisitor((1, 2, 3, 0), 2)))
+        self.assertIsNone(Puzzle(2).accept(PuzzleAssertionVisitor((1, 2, 3, 0), 2)))
 
     def test_forwards_size_4_when_accepting_a_visitor(self):
-        self.assertIsNone(Puzzle(4).accept(PuzzleVisitor(tuple(range(1, 16)) + (0,), 4)))
+        self.assertIsNone(Puzzle(4).accept(PuzzleAssertionVisitor(tuple(range(1, 16)) + (0,), 4)))
 
     def test_equates_puzzles_sharing_the_same_state(self):
         self.assertEqual(Puzzle(3), Puzzle(3))

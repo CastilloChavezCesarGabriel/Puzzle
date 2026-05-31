@@ -1,5 +1,9 @@
+from model.coordinate_validator import CoordinateValidator
+
 class Position:
     def __init__(self, row, column):
+        CoordinateValidator(row)
+        CoordinateValidator(column)
         self.__row = row
         self.__column = column
 
