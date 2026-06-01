@@ -13,15 +13,24 @@ class TkBoard:
         self.__font = font.Font(family="Helvetica", size=25, weight="bold")
         self.__tiles = {}
 
-    def bind(self, listener):
-        for (row, column), tile in self.__tiles.items():
-            tile.configure(command=lambda r=row, c=column: listener.on_click(r, c))
+    def rebuild(self, size, listener):
+        self.__clear()
+        self.__build(size, listener)
 
     def display(self, row, column, value):
-        key = (row, column)
-        if key not in self.__tiles:
-            self.__tiles[key] = self.__place(row, column)
-        self.__render(self.__tiles[key], value)
+        self.__render(self.__tiles[(row, column)], value)
+
+    def __clear(self):
+        for tile in self.__tiles.values():
+            tile.destroy()
+        self.__tiles.clear()
+
+    def __build(self, size, listener):
+        for row in range(size):
+            for column in range(size):
+                tile = self.__place(row, column)
+                tile.configure(command=lambda r=row, c=column: listener.on_click(r, c))
+                self.__tiles[(row, column)] = tile
 
     def __render(self, tile, value):
         if value == 0:

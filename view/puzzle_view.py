@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 class IPuzzleView(ABC):
     @abstractmethod
     def display(self, row, column, value):
@@ -20,4 +19,8 @@ class IPuzzleView(ABC):
 
     @abstractmethod
     def bind(self, listener):
+        pass
+
+    @abstractmethod
+    def rebuild(self, size, listener):
         pass

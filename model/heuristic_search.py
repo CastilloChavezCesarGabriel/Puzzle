@@ -1,7 +1,8 @@
 import heapq
 import itertools
+from model.puzzle_search import IPuzzleSearch
 
-class HeuristicSearch:
+class HeuristicSearch(IPuzzleSearch):
     def __init__(self, puzzle, heuristic):
         self.__heuristic = heuristic
         self.__counter = itertools.count()
