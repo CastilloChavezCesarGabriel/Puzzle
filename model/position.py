@@ -11,6 +11,9 @@ class Position:
         column_distance = abs(self.__column - other.__column)
         return (row_distance == 0 and column_distance == 1) or (row_distance == 1 and column_distance == 0)
 
+    def distance_to(self, other):
+        return abs(self.__row - other.__row) + abs(self.__column - other.__column)
+
     def __eq__(self, other):
         return isinstance(other, Position) and self.__row == other.__row and self.__column == other.__column
 

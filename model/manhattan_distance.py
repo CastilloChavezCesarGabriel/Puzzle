@@ -1,17 +1,19 @@
+from model.cell import Cell
 from model.heuristic import Heuristic
+from model.puzzle_goal import PuzzleGoal
+from model.space import Space
 
 class ManhattanDistance(Heuristic):
     def __init__(self, size):
         super().__init__(size)
-        self.__goals = tuple(divmod(tile - 1, size) for tile in range(size * size))
+        goal = PuzzleGoal(size)
+        self.__goals = {tile: goal.locate(tile) for tile in goal if tile != Cell.EMPTY}
 
     def estimate(self, state):
         distance = 0
+        space = Space(state, self._size)
         for index, tile in enumerate(state):
-            if tile == 0:
+            if tile == Cell.EMPTY:
                 continue
-            goal_row, goal_column = self.__goals[tile]
-            current_row, current_column = divmod(index, self._size)
-            distance += abs(goal_row - current_row)
-            distance += abs(goal_column - current_column)
+            distance += self.__goals[tile].distance_to(space.decode(index))
         return distance

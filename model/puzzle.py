@@ -1,23 +1,24 @@
 import random
 from model.position import Position
+from model.puzzle_goal import PuzzleGoal
 from model.space import Space
-from model.tile import Tile
 
 class Puzzle:
     def __init__(self, size, state=None):
         self.__size = size
-        self.__goal = tuple(range(1, size * size)) + (0,)
-        self.__state = state or self.__goal
+        self.__goal = PuzzleGoal(size)
+        self.__state = state or tuple(self.__goal)
 
     def is_solved(self):
-        return self.__state == self.__goal
+        return self.__goal == self.__state
 
     def expand(self):
-        for neighbor_index in Space(self.__state, self.__size).expand():
-            yield self.move(Position(*divmod(neighbor_index, self.__size)))
+        space = Space(self.__state, self.__size)
+        for neighbor_index in space.expand():
+            yield self.move(space.decode(neighbor_index))
 
     def move(self, position):
-        new_state = Tile(position).move(self.__state, self.__size)
+        new_state = Space(self.__state, self.__size).swap(position)
         if new_state is None:
             return self
         return Puzzle(self.__size, new_state)
