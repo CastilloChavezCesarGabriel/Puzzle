@@ -1,24 +1,24 @@
 import tkinter as tk
 from tkinter import font
 from adapters.tk.tk_board_frame import TkBoardFrame
+from adapters.tk.tk_empty_renderer import TkEmptyRenderer
+from adapters.tk.tk_value_renderer import TkValueRenderer
 
 class TkBoard:
-    __TILE_BACKGROUND = "#d8b292"
-    __TILE_ACTIVE = "#e6c5a8"
-    __TILE_TEXT = "#6b3f12"
-    __EMPTY_BACKGROUND = "#2f241a"
-
     def __init__(self, root, background):
         self.__frame = TkBoardFrame(root, background).create()
         self.__font = font.Font(family="Helvetica", size=25, weight="bold")
         self.__tiles = {}
+        self.__value_renderer = TkValueRenderer()
+        self.__renderers = {0: TkEmptyRenderer()}
 
     def rebuild(self, size, listener):
         self.__clear()
         self.__build(size, listener)
 
     def display(self, row, column, value):
-        self.__render(self.__tiles[(row, column)], value)
+        renderer = self.__renderers.get(value, self.__value_renderer)
+        renderer.render(self.__tiles[(row, column)], value)
 
     def __clear(self):
         for tile in self.__tiles.values():
@@ -32,20 +32,10 @@ class TkBoard:
                 tile.configure(command=lambda r=row, c=column: listener.on_click(r, c))
                 self.__tiles[(row, column)] = tile
 
-    def __render(self, tile, value):
-        if value == 0:
-            tile.config(text="", bg=self.__EMPTY_BACKGROUND,
-                        activebackground=self.__EMPTY_BACKGROUND, relief="sunken")
-        else:
-            tile.config(text=str(value), bg=self.__TILE_BACKGROUND,
-                        activebackground=self.__TILE_ACTIVE)
-
     def __place(self, row, column):
-        tile = tk.Button(self.__frame, text="", width=4, height=2, font=self.__font,
-            bg=self.__TILE_BACKGROUND, fg=self.__TILE_TEXT,
-            activebackground=self.__TILE_ACTIVE, activeforeground=self.__TILE_TEXT,
-            relief="raised", bd=6)
+        tile = tk.Button(self.__frame, width=4, height=2, font=self.__font, bd=6)
         tile.grid(row=row, column=column, padx=6, pady=6, sticky="nsew")
         self.__frame.grid_rowconfigure(row, weight=1)
         self.__frame.grid_columnconfigure(column, weight=1)
+        self.__value_renderer.render(tile, "")
         return tile
